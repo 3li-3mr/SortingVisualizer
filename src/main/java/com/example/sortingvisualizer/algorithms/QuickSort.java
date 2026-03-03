@@ -9,9 +9,9 @@ public class QuickSort extends SortingStrategy{
         int temp = array[l];
         array[l] = array[random];
         array[random] = temp;
-        if(random != 0) interchanges++;
+        if(random != l) interchanges++;
         int i = l;
-        for(int j = l+1; j < r; j++){
+        for(int j = l+1; j <= r; j++){
             comparisons++;
             if(array[j] <= array[l]){
                 i++;
@@ -21,8 +21,8 @@ public class QuickSort extends SortingStrategy{
                 interchanges++;
             }
         }
-        temp = array[0];
-        array[0] = array[i];
+        temp = array[l];
+        array[l] = array[i];
         array[i] = temp;
         interchanges++;
         return i;
