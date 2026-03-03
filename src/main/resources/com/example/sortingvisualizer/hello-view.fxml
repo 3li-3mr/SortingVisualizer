@@ -8,35 +8,127 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="921.0" prefWidth="1246.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.example.sortingvisualizer.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <TabPane prefHeight="841.0" prefWidth="1206.0" tabClosingPolicy="UNAVAILABLE">
-     <tabs>
-       <Tab text="Comparison">
-            <content>
-               <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-            </content>
-       </Tab>
-       <Tab text="Visualization">
-         <content>
-           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <children>
-                     <ComboBox layoutX="104.0" layoutY="15.0" prefHeight="25.0" prefWidth="313.0" promptText="Sorting algorithm" />
-                     <Slider layoutX="858.0" layoutY="20.0" prefHeight="14.0" prefWidth="299.0" />
-                     <Button layoutX="582.0" layoutY="12.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Button" />
-                     <Canvas height="740.0" layoutX="10.0" layoutY="58.0" width="1187.0" />
-                     <Label layoutX="731.0" layoutY="19.0" text="Visualization speed" />
-                  </children>
-               </AnchorPane>
-         </content>
-       </Tab>
-     </tabs>
-   </TabPane>
+<VBox prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sortingvisualizer.HelloController">
+    <children>
+        <TabPane prefHeight="600.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <tabs>
+                <Tab text="Sorting Comparison">
+                    <content>
+                        <VBox spacing="15.0">
+                            <padding>
+                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                            </padding>
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Label text="Array Type:" />
+                                        <ComboBox fx:id="compareArrayTypeComboBox" prefWidth="150.0" promptText="Select Type" />
+                                        <Label text="Size (Max 10k):" />
+                                        <TextField fx:id="compareSizeField" prefWidth="80.0" promptText="1000" />
+                                        <Label text="Runs:" />
+                                        <TextField fx:id="compareRunsField" prefWidth="50.0" promptText="5" />
+                                        <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load File..." />
+                                        <Label fx:id="selectedFileLabel" text="No file selected" textFill="#757575" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Button fx:id="runComparisonButton" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Run Comparison">
+                                            <font>
+                                                <Font name="System Bold" size="13.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <TableView fx:id="comparisonTable" prefHeight="400.0" prefWidth="880.0" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colAlgorithm" prefWidth="120.0" text="Algorithm" />
+                                        <TableColumn fx:id="colSize" prefWidth="75.0" text="Array Size" />
+                                        <TableColumn fx:id="colMode" prefWidth="120.0" text="Generation Mode" />
+                                        <TableColumn fx:id="colRuns" prefWidth="60.0" text="Runs" />
+                                        <TableColumn fx:id="colAvgTime" prefWidth="100.0" text="Avg Time (ms)" />
+                                        <TableColumn fx:id="colMinTime" prefWidth="100.0" text="Min Time (ms)" />
+                                        <TableColumn fx:id="colMaxTime" prefWidth="100.0" text="Max Time (ms)" />
+                                        <TableColumn fx:id="colComparisons" prefWidth="100.0" text="Comparisons" />
+                                        <TableColumn fx:id="colInterchanges" prefWidth="100.0" text="Interchanges" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
 
-    <Label fx:id="welcomeText" />
+                <Tab text="Sorting Visualization">
+                    <content>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                            <top>
+                                <VBox spacing="15.0" BorderPane.alignment="CENTER">
+                                    <padding>
+                                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                    </padding>
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                            <children>
+                                                <Label text="Algorithm:" />
+                                                <ComboBox fx:id="vizAlgorithmComboBox" prefWidth="150.0" promptText="Select Algorithm" />
+                                                <Label text="Array Type:" />
+                                                <ComboBox fx:id="vizArrayTypeComboBox" prefWidth="150.0" promptText="Select Type" />
+                                                <Button fx:id="generateArrayButton" mnemonicParsing="false" text="Generate Array (Max 100)" />
+                                            </children>
+                                        </HBox>
+                                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                            <children>
+                                                <Button fx:id="visualizeButton" mnemonicParsing="false" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Start Visualization">
+                                                    <font>
+                                                        <Font name="System Bold" size="13.0" />
+                                                    </font>
+                                                </Button>
+                                                <Label text="Speed:" />
+                                                <Slider fx:id="speedSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="5.0" />
+                                                <Label fx:id="vizComparisonsLabel" text="Comparisons: 0" textFill="#2196f3">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                    <HBox.margin>
+                                                        <Insets left="20.0" />
+                                                    </HBox.margin>
+                                                </Label>
+                                                <Label fx:id="vizInterchangesLabel" text="Interchanges: 0" textFill="#ff9800">
+                                                    <font>
+                                                        <Font name="System Bold" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </top>
+                            <center>
+                                <AnchorPane style="-fx-background-color: #2B2B2B;" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Canvas fx:id="visualizationCanvas" height="420.0" width="900.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                    </children>
+                                    <BorderPane.margin>
+                                        <Insets bottom="15.0" left="15.0" right="15.0" />
+                                    </BorderPane.margin>
+                                </AnchorPane>
+                            </center>
+                        </BorderPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
 </VBox>
