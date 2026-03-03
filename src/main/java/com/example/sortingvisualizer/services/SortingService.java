@@ -38,29 +38,69 @@ public class SortingService {
         long totalTime = 0;
         long minTime = Long.MAX_VALUE;
         long maxTime = Long.MIN_VALUE;
-        int finalComparisons = 0;
-        int finalInterchanges = 0;
+        int comparisons = 0;
+        int interchanges = 0;
 
         for (int i = 0; i < runs; i++) {
             int[] arrayToSort = generateArray(mode, size);
-            long startTime = System.currentTimeMillis();
+            long startTime = System.nanoTime();
             strategy.sort(arrayToSort);
-            long endTime = System.currentTimeMillis();
+            long endTime = System.nanoTime();
             long runTime = endTime - startTime;
 
             totalTime += runTime;
             if (runTime < minTime) minTime = runTime;
             if (runTime > maxTime) maxTime = runTime;
 
-            finalComparisons = strategy.getComparisons();
-            finalInterchanges = strategy.getInterchanges();
+            comparisons += strategy.getComparisons();
+            interchanges += strategy.getInterchanges();
         }
 
-        double avgTime = (double) totalTime / runs;
+        double avgTime = (double) totalTime / runs / 1e6;
+        minTime /= 1e6;
+        maxTime /= 1e6;
+        comparisons /= runs;
+        interchanges /= runs;
         return new ComparisonResult(
                 algorithm, size, mode, runs,
                 avgTime, minTime, maxTime,
-                finalComparisons, finalInterchanges
+                comparisons, interchanges
+        );
+    }
+
+    public ComparisonResult runComparison(String algorithm, String fileName, int[] preloadedArray, int runs){
+        SortingStrategy strategy = SortingStrategyFactory.getStrategy(algorithm);
+
+        long totalTime = 0;
+        long minTime = Long.MAX_VALUE;
+        long maxTime = Long.MIN_VALUE;
+        int comparisons = 0;
+        int interchanges = 0;
+
+        for (int i = 0; i < runs; i++) {
+            int[] arrayToSort = preloadedArray.clone();
+            long startTime = System.nanoTime();
+            strategy.sort(arrayToSort);
+            long endTime = System.nanoTime();
+            long runTime = endTime - startTime;
+
+            totalTime += runTime;
+            if (runTime < minTime) minTime = runTime;
+            if (runTime > maxTime) maxTime = runTime;
+
+            comparisons += strategy.getComparisons();
+            interchanges += strategy.getInterchanges();
+        }
+
+        double avgTime = (double) totalTime / runs / 1e6;
+        minTime /= 1e6;
+        maxTime /= 1e6;
+        comparisons /= runs;
+        interchanges /= runs;
+        return new ComparisonResult(
+                algorithm, preloadedArray.length, fileName, runs,
+                avgTime, minTime, maxTime,
+                comparisons, interchanges
         );
     }
 }

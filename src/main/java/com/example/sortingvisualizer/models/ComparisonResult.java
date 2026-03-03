@@ -1,19 +1,17 @@
 package com.example.sortingvisualizer.models;
 
 public class ComparisonResult {
-    private final String algorithm;
-    private final int size;
-    private final String mode;
-    private final int runs;
-    private final double avgTime;
-    private final long minTime;
-    private final long maxTime;
-    private final int comparisons;
-    private final int interchanges;
+    private String algorithm;
+    private int size;
+    private String mode;
+    private int runs;
+    private double avgTime;
+    private long minTime;
+    private long maxTime;
+    private int comparisons;
+    private int interchanges;
 
-    public ComparisonResult(String algorithm, int size, String mode, int runs,
-                            double avgTime, long minTime, long maxTime,
-                            int comparisons, int interchanges) {
+    public ComparisonResult(String algorithm, int size, String mode, int runs, double avgTime, long minTime, long maxTime, int comparisons, int interchanges) {
         this.algorithm = algorithm;
         this.size = size;
         this.mode = mode;

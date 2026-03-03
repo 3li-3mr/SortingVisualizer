@@ -1,5 +1,7 @@
 package com.example.sortingvisualizer.algorithms;
 
+import com.example.sortingvisualizer.models.SortFrame;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +49,12 @@ public class MergeSort extends SortingStrategy{
 
     @Override
     public int[] sort(int[] array) {
+        comparisons = 0;
+        interchanges = 0;
         return helper(array, 0, array.length - 1);
     }
 
-    private int[] helperRecord(int[] array, int l, int r, List<int[]> frames){
+    private int[] helperRecord(int[] array, int l, int r, List<SortFrame> frames){
         if(l == r) {
             int[] merged = new int[1];
             merged[0] = array[l];
@@ -86,16 +90,16 @@ public class MergeSort extends SortingStrategy{
 
         for(int j = 0; j < merged.length; j++){
             array[l + j] = merged[j];
-            frames.add(array.clone());
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
         }
 
         return merged;
     }
 
     @Override
-    public List<int[]> sortRecord(int[] array) {
-        List<int[]> frames = new ArrayList<>();
-        frames.add(array.clone());
+    public List<SortFrame> sortRecord(int[] array) {
+        List<SortFrame> frames = new ArrayList<>();
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
         helperRecord(array, 0, array.length - 1, frames);
         return frames;
     }

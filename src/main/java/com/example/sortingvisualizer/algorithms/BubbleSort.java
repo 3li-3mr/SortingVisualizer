@@ -1,11 +1,15 @@
 package com.example.sortingvisualizer.algorithms;
 
+import com.example.sortingvisualizer.models.SortFrame;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BubbleSort extends SortingStrategy{
     @Override
     public int[] sort(int[] array){
+        comparisons = 0;
+        interchanges = 0;
         for(int i = 0; i < array.length - 1; i++){
             boolean swap = false;
             for(int j = 0; j < array.length - i - 1; j++){
@@ -24,9 +28,9 @@ public class BubbleSort extends SortingStrategy{
     }
 
     @Override
-    public List<int[]> sortRecord(int[] array){
-        List<int[]> frames = new ArrayList<>();
-        frames.add(array.clone());
+    public List<SortFrame> sortRecord(int[] array){
+        List<SortFrame> frames = new ArrayList<>();
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
         for(int i = 0; i < array.length - 1; i++){
             boolean swap = false;
             for(int j = 0; j < array.length - i - 1; j++){
@@ -37,7 +41,7 @@ public class BubbleSort extends SortingStrategy{
                     array[j] = array[j+1];
                     array[j+1] = temp;
                     interchanges++;
-                    frames.add(array.clone());
+                    frames.add(new SortFrame(array.clone(), comparisons, interchanges));
                 }
             }
             if(!swap) break;

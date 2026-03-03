@@ -1,11 +1,15 @@
 package com.example.sortingvisualizer.algorithms;
 
+import com.example.sortingvisualizer.models.SortFrame;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SelectionSort extends SortingStrategy{
     @Override
     public int[] sort(int[] array) {
+        comparisons = 0;
+        interchanges = 0;
         for(int i = 0; i < array.length - 1; i++){
             int min_index = i;
             for(int j = i + 1; j < array.length; j++){
@@ -24,9 +28,9 @@ public class SelectionSort extends SortingStrategy{
         return array;
     }
     @Override
-    public List<int[]> sortRecord(int[] array){
-        List<int[]> frames = new ArrayList<>();
-        frames.add(array.clone());
+    public List<SortFrame> sortRecord(int[] array){
+        List<SortFrame> frames = new ArrayList<>();
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
         for (int i = 0; i < array.length - 1; i++) {
             int min_index = i;
             for (int j = i + 1; j < array.length; j++) {
@@ -40,7 +44,7 @@ public class SelectionSort extends SortingStrategy{
                 array[i] = array[min_index];
                 array[min_index] = temp;
                 interchanges++;
-                frames.add(array.clone());
+                frames.add(new SortFrame(array.clone(), comparisons, interchanges));
             }
         }
         return frames;
