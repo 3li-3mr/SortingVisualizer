@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.sortingvisualizer.HelloController">
+<VBox alignment="CENTER" prefHeight="921.0" prefWidth="1246.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.example.sortingvisualizer.HelloController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
+   <TabPane prefHeight="841.0" prefWidth="1206.0" tabClosingPolicy="UNAVAILABLE">
+     <tabs>
+       <Tab text="Comparison">
+            <content>
+               <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+            </content>
+       </Tab>
+       <Tab text="Visualization">
+         <content>
+           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <ComboBox layoutX="104.0" layoutY="15.0" prefHeight="25.0" prefWidth="313.0" promptText="Sorting algorithm" />
+                     <Slider layoutX="858.0" layoutY="20.0" prefHeight="14.0" prefWidth="299.0" />
+                     <Button layoutX="582.0" layoutY="12.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Button" />
+                     <Canvas height="740.0" layoutX="10.0" layoutY="58.0" width="1187.0" />
+                     <Label layoutX="731.0" layoutY="19.0" text="Visualization speed" />
+                  </children>
+               </AnchorPane>
+         </content>
+       </Tab>
+     </tabs>
+   </TabPane>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Label fx:id="welcomeText" />
 </VBox>
