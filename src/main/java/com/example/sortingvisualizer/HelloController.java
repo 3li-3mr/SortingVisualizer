@@ -43,8 +43,8 @@ public class HelloController {
     @FXML private TableColumn<ComparisonResult, String> colMode;
     @FXML private TableColumn<ComparisonResult, Integer> colRuns;
     @FXML private TableColumn<ComparisonResult, Double> colAvgTime;
-    @FXML private TableColumn<ComparisonResult, Long> colMinTime;
-    @FXML private TableColumn<ComparisonResult, Long> colMaxTime;
+    @FXML private TableColumn<ComparisonResult, Double> colMinTime;
+    @FXML private TableColumn<ComparisonResult, Double> colMaxTime;
     @FXML private TableColumn<ComparisonResult, Integer> colComparisons;
     @FXML private TableColumn<ComparisonResult, Integer> colInterchanges;
 
@@ -54,6 +54,7 @@ public class HelloController {
     @FXML private Button vizLoadFileButton;
     @FXML private Label vizSelectedFileLabel;
     @FXML private Button visualizeButton;
+    @FXML private Button pauseResumeButton; // NEW
     @FXML private Slider speedSlider;
     @FXML private Label vizComparisonsLabel;
     @FXML private Label vizInterchangesLabel;
@@ -159,6 +160,7 @@ public class HelloController {
         exportCsvButton.setOnAction(e -> exportToCsv());
         generateArrayButton.setOnAction(e -> generateArray());
         visualizeButton.setOnAction(e -> visualize());
+        pauseResumeButton.setOnAction(e -> togglePauseResume());
         loadFileButton.setOnAction(e -> loadMultipleFiles());
         vizLoadFileButton.setOnAction(e -> vizLoadSingleFile());
     }
@@ -257,6 +259,7 @@ public class HelloController {
     }
 
     private void vizLoadSingleFile() {
+        stopAnimationIfRunning();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Integer CSV File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.csv"));
@@ -280,7 +283,6 @@ public class HelloController {
                 vizSelectedFileLabel.setText(file.getName());
                 vizComparisonsLabel.setText("Comparisons: 0");
                 vizInterchangesLabel.setText("Interchanges: 0");
-                if (currentAnimation != null) currentAnimation.stop();
 
                 drawBars(currentVizArray, new int[0], new int[0]);
             } catch (Exception ex) {
@@ -290,12 +292,21 @@ public class HelloController {
     }
 
     private void generateArray() {
+        stopAnimationIfRunning();
         String mode = vizArrayTypeComboBox.getValue();
         currentVizArray = sortingService.generateArray(mode, 100);
         vizComparisonsLabel.setText("Comparisons: 0");
         vizInterchangesLabel.setText("Interchanges: 0");
-        if (currentAnimation != null) currentAnimation.stop();
         drawBars(currentVizArray, new int[0], new int[0]);
+    }
+
+    private void stopAnimationIfRunning() {
+        if (currentAnimation != null) {
+            currentAnimation.stop();
+            pauseResumeButton.setDisable(true);
+            pauseResumeButton.setText("Pause");
+            pauseResumeButton.setStyle("-fx-background-color: #757575; -fx-text-fill: white;");
+        }
     }
 
     private void visualize() {
@@ -310,9 +321,7 @@ public class HelloController {
 
         List<SortFrame> frames = strategy.sortRecord(arrayCopy);
 
-        if (currentAnimation != null) {
-            currentAnimation.stop();
-        }
+        stopAnimationIfRunning();
 
         AtomicInteger frameIndex = new AtomicInteger(0);
 
@@ -327,6 +336,10 @@ public class HelloController {
             delayMillis = 16.0;
             framesPerTick = (int) ((speedValue - 4) * 2);
         }
+
+        pauseResumeButton.setDisable(false);
+        pauseResumeButton.setText("Pause");
+        pauseResumeButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
 
         currentAnimation = new Timeline(new KeyFrame(Duration.millis(delayMillis), e -> {
             int currentIndex = frameIndex.get();
@@ -357,16 +370,36 @@ public class HelloController {
             vizInterchangesLabel.setText("Interchanges: " + finalFrame.interchanges());
 
             currentVizArray = arrayCopy;
+
+            pauseResumeButton.setDisable(true);
+            pauseResumeButton.setText("Pause");
+            pauseResumeButton.setStyle("-fx-background-color: #757575; -fx-text-fill: white;");
         });
 
         currentAnimation.play();
+    }
+
+    private void togglePauseResume() {
+        if (currentAnimation != null) {
+            if (currentAnimation.getStatus() == javafx.animation.Animation.Status.RUNNING) {
+                currentAnimation.pause();
+                pauseResumeButton.setText("Resume");
+                pauseResumeButton.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;");
+            } else if (currentAnimation.getStatus() == javafx.animation.Animation.Status.PAUSED) {
+                currentAnimation.play();
+                pauseResumeButton.setText("Pause");
+                pauseResumeButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
+            }
+        }
     }
 
     private void drawBars(int[] array, int[] swappedIndices, int[] comparedIndices) {
         GraphicsContext gc = visualizationCanvas.getGraphicsContext2D();
         double width = visualizationCanvas.getWidth();
         double height = visualizationCanvas.getHeight();
-        gc.setFill(Color.web("#2B2B2B"));
+        if (width <= 0 || height <= 0) return;
+
+        gc.setFill(Color.web("#121212"));
         gc.fillRect(0, 0, width, height);
 
         int max = Arrays.stream(array).max().orElse(1);
@@ -385,7 +418,7 @@ public class HelloController {
             } else if (isCompared) {
                 gc.setFill(Color.web("#0D47A1"));
             } else {
-                gc.setFill(Color.DODGERBLUE);
+                gc.setFill(Color.web("#2196F3"));
             }
 
             double widthAdjustment = barWidth > 2 ? 1.0 : 0.0;

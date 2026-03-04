@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sortingvisualizer.HelloController">
+<VBox prefHeight="700.0" prefWidth="1000.0" style="-fx-base: #1e1e1e; -fx-background: #121212; -fx-control-inner-background: #2b2b2b;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sortingvisualizer.HelloController">
     <children>
         <TabPane prefHeight="650.0" prefWidth="950.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
             <tabs>
@@ -55,21 +55,17 @@
                                         <TextField fx:id="compareRunsField" prefWidth="50.0" promptText="5" text="5" />
 
                                         <Button fx:id="loadFileButton" managed="false" mnemonicParsing="false" text="Load Files..." visible="false" />
-                                        <Label fx:id="selectedFileLabel" managed="false" text="No files selected" textFill="#757575" visible="false" />
+                                        <Label fx:id="selectedFileLabel" managed="false" text="No files selected" textFill="#9e9e9e" visible="false" />
                                     </children>
                                 </HBox>
 
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Button fx:id="runComparisonButton" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Run Comparison">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
+                                            <font><Font name="System Bold" size="13.0" /></font>
                                         </Button>
                                         <Button fx:id="exportCsvButton" mnemonicParsing="false" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Export to CSV">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
+                                            <font><Font name="System Bold" size="13.0" /></font>
                                         </Button>
                                     </children>
                                 </HBox>
@@ -115,16 +111,19 @@
                                                 <Button fx:id="generateArrayButton" mnemonicParsing="false" text="Generate Array (Max 100)" />
 
                                                 <Button fx:id="vizLoadFileButton" managed="false" mnemonicParsing="false" text="Load File..." visible="false" />
-                                                <Label fx:id="vizSelectedFileLabel" managed="false" text="No file selected" textFill="#757575" visible="false" />
+                                                <Label fx:id="vizSelectedFileLabel" managed="false" text="No file selected" textFill="#9e9e9e" visible="false" />
                                             </children>
                                         </HBox>
                                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                                             <children>
                                                 <Button fx:id="visualizeButton" mnemonicParsing="false" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Start Visualization">
-                                                    <font>
-                                                        <Font name="System Bold" size="13.0" />
-                                                    </font>
+                                                    <font><Font name="System Bold" size="13.0" /></font>
                                                 </Button>
+
+                                                <Button fx:id="pauseResumeButton" disable="true" mnemonicParsing="false" style="-fx-background-color: #757575; -fx-text-fill: white;" text="Pause">
+                                                    <font><Font name="System Bold" size="13.0" /></font>
+                                                </Button>
+
                                                 <Label text="Speed:" />
                                                 <Slider fx:id="speedSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="5.0" />
                                                 <Label fx:id="vizComparisonsLabel" text="Comparisons: 0" textFill="#2196f3">
@@ -140,9 +139,9 @@
                                 </VBox>
                             </top>
                             <center>
-                                <AnchorPane style="-fx-background-color: #2B2B2B;" BorderPane.alignment="CENTER">
+                                <AnchorPane style="-fx-background-color: #121212; -fx-border-color: #333333; -fx-border-width: 2px; -fx-border-radius: 5px;" BorderPane.alignment="CENTER">
                                     <children>
-                                        <Canvas fx:id="visualizationCanvas" height="420.0" width="900.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                        <Canvas fx:id="visualizationCanvas" height="420.0" width="900.0" layoutX="10.0" layoutY="10.0" />
                                     </children>
                                     <BorderPane.margin>
                                         <Insets bottom="15.0" left="15.0" right="15.0" />
