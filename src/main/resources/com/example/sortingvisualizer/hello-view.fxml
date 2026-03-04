@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
@@ -17,9 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sortingvisualizer.HelloController">
+<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sortingvisualizer.HelloController">
     <children>
-        <TabPane prefHeight="600.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <TabPane prefHeight="650.0" prefWidth="950.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
             <tabs>
                 <Tab text="Sorting Comparison">
                     <content>
@@ -28,18 +29,36 @@
                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                             </padding>
                             <children>
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <Label text="Algorithms to Compare:">
+                                            <font><Font name="System Bold" size="12.0" /></font>
+                                        </Label>
+                                        <CheckBox fx:id="chkSelection" selected="true" text="Selection Sort" />
+                                        <CheckBox fx:id="chkInsertion" selected="true" text="Insertion Sort" />
+                                        <CheckBox fx:id="chkBubble" selected="true" text="Bubble Sort" />
+                                        <CheckBox fx:id="chkMerge" selected="true" text="Merge Sort" />
+                                        <CheckBox fx:id="chkHeap" selected="true" text="Heap Sort" />
+                                        <CheckBox fx:id="chkQuick" selected="true" text="Quick Sort" />
+                                    </children>
+                                </HBox>
+
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Label text="Array Type:" />
                                         <ComboBox fx:id="compareArrayTypeComboBox" prefWidth="150.0" promptText="Select Type" />
+
                                         <Label text="Size (Max 10k):" />
-                                        <TextField fx:id="compareSizeField" prefWidth="80.0" promptText="1000" />
+                                        <TextField fx:id="compareSizeField" prefWidth="80.0" promptText="1000" text="1000" />
+
                                         <Label text="Runs:" />
-                                        <TextField fx:id="compareRunsField" prefWidth="50.0" promptText="5" />
-                                        <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load File..." />
-                                        <Label fx:id="selectedFileLabel" text="No file selected" textFill="#757575" />
+                                        <TextField fx:id="compareRunsField" prefWidth="50.0" promptText="5" text="5" />
+
+                                        <Button fx:id="loadFileButton" managed="false" mnemonicParsing="false" text="Load Files..." visible="false" />
+                                        <Label fx:id="selectedFileLabel" managed="false" text="No files selected" textFill="#757575" visible="false" />
                                     </children>
                                 </HBox>
+
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                         <Button fx:id="runComparisonButton" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Run Comparison">
@@ -49,6 +68,7 @@
                                         </Button>
                                     </children>
                                 </HBox>
+
                                 <TableView fx:id="comparisonTable" prefHeight="400.0" prefWidth="880.0" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="colAlgorithm" prefWidth="120.0" text="Algorithm" />
@@ -83,9 +103,14 @@
                                             <children>
                                                 <Label text="Algorithm:" />
                                                 <ComboBox fx:id="vizAlgorithmComboBox" prefWidth="150.0" promptText="Select Algorithm" />
+
                                                 <Label text="Array Type:" />
                                                 <ComboBox fx:id="vizArrayTypeComboBox" prefWidth="150.0" promptText="Select Type" />
+
                                                 <Button fx:id="generateArrayButton" mnemonicParsing="false" text="Generate Array (Max 100)" />
+
+                                                <Button fx:id="vizLoadFileButton" managed="false" mnemonicParsing="false" text="Load File..." visible="false" />
+                                                <Label fx:id="vizSelectedFileLabel" managed="false" text="No file selected" textFill="#757575" visible="false" />
                                             </children>
                                         </HBox>
                                         <HBox alignment="CENTER_LEFT" spacing="15.0">
@@ -98,17 +123,11 @@
                                                 <Label text="Speed:" />
                                                 <Slider fx:id="speedSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="5.0" />
                                                 <Label fx:id="vizComparisonsLabel" text="Comparisons: 0" textFill="#2196f3">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                    <HBox.margin>
-                                                        <Insets left="20.0" />
-                                                    </HBox.margin>
+                                                    <font><Font name="System Bold" size="14.0" /></font>
+                                                    <HBox.margin><Insets left="20.0" /></HBox.margin>
                                                 </Label>
                                                 <Label fx:id="vizInterchangesLabel" text="Interchanges: 0" textFill="#ff9800">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
+                                                    <font><Font name="System Bold" size="14.0" /></font>
                                                 </Label>
                                             </children>
                                         </HBox>

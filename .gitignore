@@ -49,3 +49,9 @@ buildNumber.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# files generator and the files generated
+src/main/java/com/example/sortingvisualizer/TestGenerator.java
+compare_random_1000.csv
+compare_reversed_1000.csv
+compare_sorted_1000.csv

@@ -6,12 +6,12 @@ public class ComparisonResult {
     private String mode;
     private int runs;
     private double avgTime;
-    private long minTime;
-    private long maxTime;
+    private double minTime;
+    private double maxTime;
     private int comparisons;
     private int interchanges;
 
-    public ComparisonResult(String algorithm, int size, String mode, int runs, double avgTime, long minTime, long maxTime, int comparisons, int interchanges) {
+    public ComparisonResult(String algorithm, int size, String mode, int runs, double avgTime, double minTime, double maxTime, int comparisons, int interchanges) {
         this.algorithm = algorithm;
         this.size = size;
         this.mode = mode;
@@ -28,8 +28,8 @@ public class ComparisonResult {
     public String getMode() { return mode; }
     public int getRuns() { return runs; }
     public double getAvgTime() { return avgTime; }
-    public long getMinTime() { return minTime; }
-    public long getMaxTime() { return maxTime; }
+    public double getMinTime() { return minTime; }
+    public double getMaxTime() { return maxTime; }
     public int getComparisons() { return comparisons; }
     public int getInterchanges() { return interchanges; }
 }

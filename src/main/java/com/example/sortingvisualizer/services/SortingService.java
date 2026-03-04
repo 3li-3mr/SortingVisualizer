@@ -35,18 +35,18 @@ public class SortingService {
     public ComparisonResult runComparison(String algorithm, String mode, int size, int runs){
         SortingStrategy strategy = SortingStrategyFactory.getStrategy(algorithm);
 
-        long totalTime = 0;
-        long minTime = Long.MAX_VALUE;
-        long maxTime = Long.MIN_VALUE;
+        double totalTime = 0;
+        double minTime = Long.MAX_VALUE;
+        double maxTime = Long.MIN_VALUE;
         int comparisons = 0;
         int interchanges = 0;
 
         for (int i = 0; i < runs; i++) {
             int[] arrayToSort = generateArray(mode, size);
-            long startTime = System.nanoTime();
+            double startTime = System.nanoTime();
             strategy.sort(arrayToSort);
-            long endTime = System.nanoTime();
-            long runTime = endTime - startTime;
+            double endTime = System.nanoTime();
+            double runTime = endTime - startTime;
 
             totalTime += runTime;
             if (runTime < minTime) minTime = runTime;
@@ -68,21 +68,26 @@ public class SortingService {
         );
     }
 
-    public ComparisonResult runComparison(String algorithm, String fileName, int[] preloadedArray, int runs){
+    public ComparisonResult runComparison(String algorithm, String fileName, java.util.List<int[]> preloadedArrays){
         SortingStrategy strategy = SortingStrategyFactory.getStrategy(algorithm);
 
-        long totalTime = 0;
-        long minTime = Long.MAX_VALUE;
-        long maxTime = Long.MIN_VALUE;
+        double totalTime = 0;
+        double minTime = Long.MAX_VALUE;
+        double maxTime = Long.MIN_VALUE;
         int comparisons = 0;
         int interchanges = 0;
 
+        // The number of runs is simply the amount of files loaded
+        int runs = preloadedArrays.size();
+
         for (int i = 0; i < runs; i++) {
-            int[] arrayToSort = preloadedArray.clone();
-            long startTime = System.nanoTime();
+            // Get the specific array for this run and clone it
+            int[] arrayToSort = preloadedArrays.get(i).clone();
+
+            double startTime = System.nanoTime();
             strategy.sort(arrayToSort);
-            long endTime = System.nanoTime();
-            long runTime = endTime - startTime;
+            double endTime = System.nanoTime();
+            double runTime = endTime - startTime;
 
             totalTime += runTime;
             if (runTime < minTime) minTime = runTime;
@@ -97,8 +102,9 @@ public class SortingService {
         maxTime /= 1e6;
         comparisons /= runs;
         interchanges /= runs;
+
         return new ComparisonResult(
-                algorithm, preloadedArray.length, fileName, runs,
+                algorithm, preloadedArrays.get(0).length, fileName, runs,
                 avgTime, minTime, maxTime,
                 comparisons, interchanges
         );
