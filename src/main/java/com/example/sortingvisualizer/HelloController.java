@@ -28,9 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HelloController {
 
-    // Comparison Tab CheckBoxes
     @FXML private CheckBox chkSelection, chkInsertion, chkBubble, chkMerge, chkHeap, chkQuick;
-
     @FXML private ComboBox<String> compareArrayTypeComboBox;
     @FXML private TextField compareSizeField;
     @FXML private TextField compareRunsField;
@@ -48,7 +46,6 @@ public class HelloController {
     @FXML private TableColumn<ComparisonResult, Integer> colComparisons;
     @FXML private TableColumn<ComparisonResult, Integer> colInterchanges;
 
-    // Visualization Tab
     @FXML private ComboBox<String> vizAlgorithmComboBox;
     @FXML private ComboBox<String> vizArrayTypeComboBox;
     @FXML private Button generateArrayButton;
@@ -62,14 +59,11 @@ public class HelloController {
 
     private final SortingService sortingService = new SortingService();
     private final String[] algorithms = {"Selection Sort", "Insertion Sort", "Bubble Sort", "Merge Sort", "Heap Sort", "Quick Sort"};
-
-    // ADDED "Files" option here
     private final String[] arrayTypes = {"Random", "Sorted", "Inversely Sorted", "Files"};
 
     private int[] currentVizArray;
     private Timeline currentAnimation;
 
-    // To hold multiple files in Comparison Mode
     private List<File> selectedFiles = new ArrayList<>();
     private List<int[]> loadedFileArrays = new ArrayList<>();
 
@@ -80,7 +74,7 @@ public class HelloController {
             double safeWidth = Math.max(1.0, newVal.doubleValue() - 20);
             visualizationCanvas.setWidth(safeWidth);
             if (currentVizArray != null && (currentAnimation == null || currentAnimation.getStatus() != javafx.animation.Animation.Status.RUNNING)) {
-                drawBars(currentVizArray);
+                drawBars(currentVizArray, new int[0], new int[0]);
             }
         });
 
@@ -88,7 +82,7 @@ public class HelloController {
             double safeHeight = Math.max(1.0, newVal.doubleValue() - 20);
             visualizationCanvas.setHeight(safeHeight);
             if (currentVizArray != null && (currentAnimation == null || currentAnimation.getStatus() != javafx.animation.Animation.Status.RUNNING)) {
-                drawBars(currentVizArray);
+                drawBars(currentVizArray, new int[0], new int[0]);
             }
         });
 
@@ -106,39 +100,29 @@ public class HelloController {
         vizArrayTypeComboBox.setItems(typeList);
         vizArrayTypeComboBox.setValue("Random");
 
-        // --- DYNAMIC UI TOGGLE LOGIC ---
-
-        // Comparison Tab listener
         compareArrayTypeComboBox.setOnAction(e -> {
             String selected = compareArrayTypeComboBox.getValue();
             if ("Files".equals(selected)) {
-                // Hide normal inputs, show file buttons
                 compareSizeField.setDisable(true);
                 compareRunsField.setDisable(true);
                 compareRunsField.setText(String.valueOf(selectedFiles.size()));
-
                 loadFileButton.setVisible(true);
                 loadFileButton.setManaged(true);
                 selectedFileLabel.setVisible(true);
                 selectedFileLabel.setManaged(true);
             } else {
-                // Show normal inputs, hide file buttons
                 compareSizeField.setDisable(false);
                 compareRunsField.setDisable(false);
-
                 loadFileButton.setVisible(false);
                 loadFileButton.setManaged(false);
                 selectedFileLabel.setVisible(false);
                 selectedFileLabel.setManaged(false);
-
-                // Clear out file data so it doesn't leak into random tests
                 selectedFiles.clear();
                 loadedFileArrays.clear();
                 selectedFileLabel.setText("No files selected");
             }
         });
 
-        // Visualization Tab listener
         vizArrayTypeComboBox.setOnAction(e -> {
             String selected = vizArrayTypeComboBox.getValue();
             if ("Files".equals(selected)) {
@@ -168,25 +152,21 @@ public class HelloController {
         colComparisons.setCellValueFactory(new PropertyValueFactory<>("comparisons"));
         colInterchanges.setCellValueFactory(new PropertyValueFactory<>("interchanges"));
 
-        runComparisonButton.setOnAction(e -> handleRunComparison());
-        generateArrayButton.setOnAction(e -> handleGenerateArray());
-        visualizeButton.setOnAction(e -> handleVisualize());
-
-        loadFileButton.setOnAction(e -> handleLoadMultipleFiles());
-        vizLoadFileButton.setOnAction(e -> handleVizLoadSingleFile());
+        runComparisonButton.setOnAction(e -> runComparison());
+        generateArrayButton.setOnAction(e -> generateArray());
+        visualizeButton.setOnAction(e -> visualize());
+        loadFileButton.setOnAction(e -> loadMultipleFiles());
+        vizLoadFileButton.setOnAction(e -> vizLoadSingleFile());
     }
 
-    private void handleRunComparison() {
+    private void runComparison() {
         comparisonTable.getItems().clear();
 
         try {
             int size = Integer.parseInt(compareSizeField.getText());
             int runs = Integer.parseInt(compareRunsField.getText());
             String mode = compareArrayTypeComboBox.getValue();
-
             if (size > 10000) size = 10000;
-
-            // 1. Check which algorithms the user selected
             List<String> selectedAlgos = new ArrayList<>();
             if (chkSelection.isSelected()) selectedAlgos.add("Selection Sort");
             if (chkInsertion.isSelected()) selectedAlgos.add("Insertion Sort");
@@ -211,16 +191,12 @@ public class HelloController {
             int finalSize = size;
             new Thread(() -> {
                 try {
-                    for (String algo : selectedAlgos) { // Only loop through checked algorithms
-
+                    for (String algo : selectedAlgos) {
                         if ("Files".equals(mode)) {
-                            // Pass the entire list to the service at once
                             String fName = "Files (" + loadedFileArrays.size() + ")";
-
                             ComparisonResult result = sortingService.runComparison(algo, fName, loadedFileArrays);
                             Platform.runLater(() -> comparisonTable.getItems().add(result));
                         } else {
-                            // Standard Random/Sorted generation
                             ComparisonResult result = sortingService.runComparison(algo, mode, finalSize, runs);
                             Platform.runLater(() -> comparisonTable.getItems().add(result));
                         }
@@ -241,13 +217,10 @@ public class HelloController {
         }
     }
 
-    // Loads MULTIPLE files for the Comparison Mode
-    private void handleLoadMultipleFiles() {
+    private void loadMultipleFiles() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Integer CSV Files");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.csv"));
-
-        // Allows user to shift+click or ctrl+click multiple files
         List<File> files = fileChooser.showOpenMultipleDialog(null);
 
         if (files != null && !files.isEmpty()) {
@@ -264,8 +237,6 @@ public class HelloController {
                     loadedFileArrays.add(arr);
                 }
                 selectedFileLabel.setText(files.size() + " file(s) loaded");
-
-                // Force runs to match the number of files as requested
                 compareRunsField.setText(String.valueOf(files.size()));
             } catch (Exception ex) {
                 showAlert("File Error", "Could not parse one or more files. Ensure they contain comma-separated integers.");
@@ -273,8 +244,7 @@ public class HelloController {
         }
     }
 
-    // Loads a SINGLE file for the Visualization Mode
-    private void handleVizLoadSingleFile() {
+    private void vizLoadSingleFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Integer CSV File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.csv"));
@@ -285,8 +255,6 @@ public class HelloController {
                 String content = Files.readString(file.toPath());
                 String[] stringValues = content.split(",");
                 int size = stringValues.length;
-
-                // Cap the visualizer at 100 elements even if the file is huge
                 if (size > 100) {
                     showAlert("Size Notice", "Visualization only supports up to 100 elements. Taking the first 100.");
                     size = 100;
@@ -302,25 +270,23 @@ public class HelloController {
                 vizInterchangesLabel.setText("Interchanges: 0");
                 if (currentAnimation != null) currentAnimation.stop();
 
-                drawBars(currentVizArray);
+                drawBars(currentVizArray, new int[0], new int[0]);
             } catch (Exception ex) {
                 showAlert("File Error", "Could not parse the file. Ensure it contains comma-separated integers.");
             }
         }
     }
 
-    private void handleGenerateArray() {
+    private void generateArray() {
         String mode = vizArrayTypeComboBox.getValue();
         currentVizArray = sortingService.generateArray(mode, 100);
-
         vizComparisonsLabel.setText("Comparisons: 0");
         vizInterchangesLabel.setText("Interchanges: 0");
         if (currentAnimation != null) currentAnimation.stop();
-
-        drawBars(currentVizArray);
+        drawBars(currentVizArray, new int[0], new int[0]);
     }
 
-    private void handleVisualize() {
+    private void visualize() {
         if (currentVizArray == null) {
             showAlert("No Array", "Please generate or load an array first!");
             return;
@@ -358,9 +324,11 @@ public class HelloController {
             }
 
             SortFrame currentFrame = frames.get(currentIndex);
-            int[] activeIndices = findSwappedIndices(currentIndex, frames);
 
-            drawBars(currentFrame.array(), activeIndices);
+            int[] comparedIndices = currentFrame.comparedIndices();
+            int[] swappedIndices = currentFrame.swappedIndices();
+
+            drawBars(currentFrame.array(), swappedIndices, comparedIndices);
             vizComparisonsLabel.setText("Comparisons: " + currentFrame.comparisons());
             vizInterchangesLabel.setText("Interchanges: " + currentFrame.interchanges());
 
@@ -372,7 +340,7 @@ public class HelloController {
 
         currentAnimation.setOnFinished(e -> {
             SortFrame finalFrame = frames.get(frames.size() - 1);
-            drawBars(finalFrame.array());
+            drawBars(finalFrame.array(), new int[0], new int[0]);
             vizComparisonsLabel.setText("Comparisons: " + finalFrame.comparisons());
             vizInterchangesLabel.setText("Interchanges: " + finalFrame.interchanges());
 
@@ -382,23 +350,7 @@ public class HelloController {
         currentAnimation.play();
     }
 
-    private int[] findSwappedIndices(int currentIndex, List<SortFrame> frames) {
-        if (currentIndex == 0) return new int[0];
-
-        int[] currentArray = frames.get(currentIndex).array();
-        int[] prevArray = frames.get(currentIndex - 1).array();
-
-        List<Integer> changed = new ArrayList<>();
-        for (int i = 0; i < currentArray.length; i++) {
-            if (currentArray[i] != prevArray[i]) {
-                changed.add(i);
-            }
-        }
-
-        return changed.stream().mapToInt(i -> i).toArray();
-    }
-
-    private void drawBars(int[] array, int... activeIndices) {
+    private void drawBars(int[] array, int[] swappedIndices, int[] comparedIndices) {
         GraphicsContext gc = visualizationCanvas.getGraphicsContext2D();
         double width = visualizationCanvas.getWidth();
         double height = visualizationCanvas.getHeight();
@@ -413,16 +365,13 @@ public class HelloController {
             double x = i * barWidth;
             double y = height - barHeight;
 
-            boolean isHighlighted = false;
-            for (int activeIndex : activeIndices) {
-                if (i == activeIndex) {
-                    isHighlighted = true;
-                    break;
-                }
-            }
+            boolean isSwapped = containsIndex(swappedIndices, i);
+            boolean isCompared = containsIndex(comparedIndices, i);
 
-            if (isHighlighted) {
-                gc.setFill(Color.web("#FF5252"));
+            if (isSwapped) {
+                gc.setFill(Color.WHITE);
+            } else if (isCompared) {
+                gc.setFill(Color.web("#0D47A1"));
             } else {
                 gc.setFill(Color.DODGERBLUE);
             }
@@ -430,6 +379,14 @@ public class HelloController {
             double widthAdjustment = barWidth > 2 ? 1.0 : 0.0;
             gc.fillRect(x, y, barWidth - widthAdjustment, barHeight);
         }
+    }
+
+    private boolean containsIndex(int[] array, int target) {
+        if (array == null) return false;
+        for (int j : array) {
+            if (j == target) return true;
+        }
+        return false;
     }
 
     private void showAlert(String title, String content) {

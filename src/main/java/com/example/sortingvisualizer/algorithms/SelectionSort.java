@@ -30,11 +30,12 @@ public class SelectionSort extends SortingStrategy{
     @Override
     public List<SortFrame> sortRecord(int[] array){
         List<SortFrame> frames = new ArrayList<>();
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[0]));
         for (int i = 0; i < array.length - 1; i++) {
             int min_index = i;
             for (int j = i + 1; j < array.length; j++) {
                 comparisons++;
+                frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{j, min_index}, new int[0]));
                 if (array[j] < array[min_index]) {
                     min_index = j;
                 }
@@ -44,7 +45,7 @@ public class SelectionSort extends SortingStrategy{
                 array[i] = array[min_index];
                 array[min_index] = temp;
                 interchanges++;
-                frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+                frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{i, min_index}));
             }
         }
         return frames;

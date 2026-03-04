@@ -32,24 +32,25 @@ public class InsertionSort extends SortingStrategy{
     @Override
     public List<SortFrame> sortRecord(int[] array){
         List<SortFrame> frames = new ArrayList<>();
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[0]));
         for(int i = 1; i < array.length; i++){
             int key = array[i];
             int j = i;
             while(j > 0){
                 comparisons++;
+                frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{j, j-1}, new int[0]));
                 if(key < array[j-1]){
                     array[j] = array[j-1];
                     j--;
                     interchanges++;
-                    frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+                    frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{j, j+1}));
                 }
                 else{
                     break;
                 }
             }
             array[j] = key;
-            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{j}));
         }
         return frames;
     }

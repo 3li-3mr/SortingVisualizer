@@ -52,25 +52,26 @@ public class QuickSort extends SortingStrategy{
         array[random] = temp;
         if(random != l){
             interchanges++;
-            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{l, random}));
         }
         int i = l;
         for(int j = l+1; j <= r; j++){
             comparisons++;
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{j, l}, new int[0]));
             if(array[j] <= array[l]){
                 i++;
                 temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
                 interchanges++;
-                frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+                frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{i, j}));
             }
         }
         temp = array[l];
         array[l] = array[i];
         array[i] = temp;
         interchanges++;
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{l, i}));
         return i;
     }
 
@@ -84,7 +85,7 @@ public class QuickSort extends SortingStrategy{
     @Override
     public List<SortFrame> sortRecord(int[] array) {
         List<SortFrame> frames = new ArrayList<>();
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[0]));
         helperRecord(array, 0, array.length - 1, frames);
         return frames;
     }

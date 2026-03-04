@@ -56,17 +56,19 @@ public class HeapSort extends SortingStrategy{
         comparisons++;
         if(l <= heapsize && array[l] > array[i]){
             largest = l;
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{l, i}, new int[0]));
         }
         comparisons++;
         if(r <= heapsize && array[r] > array[largest]){
             largest = r;
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{r, largest}, new int[0]));
         }
         if(largest != i){
             int temp = array[i];
             array[i] = array[largest];
             array[largest] = temp;
             interchanges++;
-            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{i, largest}));
             maxHeapifyRecord(array, largest, heapsize, frames);
         }
     }
@@ -80,7 +82,7 @@ public class HeapSort extends SortingStrategy{
     @Override
     public List<SortFrame> sortRecord(int[] array) {
         List<SortFrame> frames = new ArrayList<>();
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[0]));
         buildMaxHeapRecord(array, frames);
         int heapsize = array.length - 1;
         while(heapsize > 0){
@@ -88,7 +90,7 @@ public class HeapSort extends SortingStrategy{
             array[0] = array[heapsize];
             array[heapsize--] = temp;
             interchanges++;
-            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{0, heapsize + 1}));
             maxHeapifyRecord(array, 0, heapsize, frames);
         }
         return frames;

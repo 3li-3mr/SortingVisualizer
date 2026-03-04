@@ -68,6 +68,7 @@ public class MergeSort extends SortingStrategy{
         int left_index = 0, right_index = 0, i = 0;
         while(left_index < left.length && right_index < right.length){
             comparisons++;
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[]{l + left_index, (mid + 1) + right_index}, new int[0]));
             if(left[left_index] <= right[right_index]){
                 merged[i++] = left[left_index++];
             }
@@ -90,7 +91,7 @@ public class MergeSort extends SortingStrategy{
 
         for(int j = 0; j < merged.length; j++){
             array[l + j] = merged[j];
-            frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+            frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[]{l + j}));
         }
 
         return merged;
@@ -99,7 +100,7 @@ public class MergeSort extends SortingStrategy{
     @Override
     public List<SortFrame> sortRecord(int[] array) {
         List<SortFrame> frames = new ArrayList<>();
-        frames.add(new SortFrame(array.clone(), comparisons, interchanges));
+        frames.add(new SortFrame(array.clone(), comparisons, interchanges, new int[0], new int[0]));
         helperRecord(array, 0, array.length - 1, frames);
         return frames;
     }
