@@ -4,6 +4,7 @@ import com.example.sortingvisualizer.algorithms.SortingStrategy;
 import com.example.sortingvisualizer.algorithms.SortingStrategyFactory;
 import com.example.sortingvisualizer.models.ComparisonResult;
 import com.example.sortingvisualizer.models.SortFrame;
+import com.example.sortingvisualizer.services.CsvExportService;
 import com.example.sortingvisualizer.services.SortingService;
 import javafx.application.Platform;
 import javafx.animation.KeyFrame;
@@ -35,6 +36,7 @@ public class HelloController {
     @FXML private Button loadFileButton;
     @FXML private Label selectedFileLabel;
     @FXML private Button runComparisonButton;
+    @FXML private Button exportCsvButton;
     @FXML private TableView<ComparisonResult> comparisonTable;
     @FXML private TableColumn<ComparisonResult, String> colAlgorithm;
     @FXML private TableColumn<ComparisonResult, Integer> colSize;
@@ -58,6 +60,7 @@ public class HelloController {
     @FXML private Canvas visualizationCanvas;
 
     private final SortingService sortingService = new SortingService();
+    private final CsvExportService csvExportService = new CsvExportService();
     private final String[] algorithms = {"Selection Sort", "Insertion Sort", "Bubble Sort", "Merge Sort", "Heap Sort", "Quick Sort"};
     private final String[] arrayTypes = {"Random", "Sorted", "Inversely Sorted", "Files"};
 
@@ -153,6 +156,7 @@ public class HelloController {
         colInterchanges.setCellValueFactory(new PropertyValueFactory<>("interchanges"));
 
         runComparisonButton.setOnAction(e -> runComparison());
+        exportCsvButton.setOnAction(e -> exportToCsv());
         generateArrayButton.setOnAction(e -> generateArray());
         visualizeButton.setOnAction(e -> visualize());
         loadFileButton.setOnAction(e -> loadMultipleFiles());
@@ -185,21 +189,29 @@ public class HelloController {
                 return;
             }
 
+            List<int[]> arrays = new ArrayList<>();
+            String displayMode = mode;
+
+            if ("Files".equals(mode)) {
+                arrays.addAll(loadedFileArrays);
+                displayMode = "Files (" + loadedFileArrays.size() + ")";
+            } else {
+                for (int i = 0; i < runs; i++) {
+                    arrays.add(sortingService.generateArray(mode, size));
+                }
+            }
+
             runComparisonButton.setDisable(true);
             runComparisonButton.setText("Running...");
 
-            int finalSize = size;
+            List<int[]> finalArrays = arrays;
+            String finalMode = displayMode;
+
             new Thread(() -> {
                 try {
                     for (String algo : selectedAlgos) {
-                        if ("Files".equals(mode)) {
-                            String fName = "Files (" + loadedFileArrays.size() + ")";
-                            ComparisonResult result = sortingService.runComparison(algo, fName, loadedFileArrays);
-                            Platform.runLater(() -> comparisonTable.getItems().add(result));
-                        } else {
-                            ComparisonResult result = sortingService.runComparison(algo, mode, finalSize, runs);
-                            Platform.runLater(() -> comparisonTable.getItems().add(result));
-                        }
+                        ComparisonResult result = sortingService.runComparison(algo, finalMode, finalArrays);
+                        Platform.runLater(() -> comparisonTable.getItems().add(result));
                     }
                 } catch (Throwable t) {
                     t.printStackTrace();
@@ -395,5 +407,33 @@ public class HelloController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void exportToCsv() {
+        if (comparisonTable.getItems().isEmpty()) {
+            showAlert("Export Error", "There is no data to export. Please run a comparison first.");
+            return;
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Results as CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("comparison_results.csv");
+        File file = fileChooser.showSaveDialog(comparisonTable.getScene().getWindow());
+        if (file != null) {
+            try {
+                List<ComparisonResult> results = new ArrayList<>(comparisonTable.getItems());
+                csvExportService.exportToCsv(results, file);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export Successful");
+                alert.setHeaderText(null);
+                alert.setContentText("Results successfully saved to:\n" + file.getAbsolutePath());
+                alert.showAndWait();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Export Error", "An error occurred while saving the file: " + ex.getMessage());
+            }
+        }
     }
 }
