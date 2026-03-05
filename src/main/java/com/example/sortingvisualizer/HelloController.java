@@ -55,7 +55,7 @@ public class HelloController {
     @FXML private Button vizLoadFileButton;
     @FXML private Label vizSelectedFileLabel;
     @FXML private Button visualizeButton;
-    @FXML private Button pauseResumeButton; // NEW
+    @FXML private Button pauseResumeButton;
     @FXML private Slider speedSlider;
     @FXML private Label vizComparisonsLabel;
     @FXML private Label vizInterchangesLabel;
@@ -191,29 +191,36 @@ public class HelloController {
                 return;
             }
 
-            List<int[]> arrays = new ArrayList<>();
-            String displayMode = mode;
-
-            if ("Files".equals(mode)) {
-                arrays.addAll(loadedFileArrays);
-                displayMode = "Files (" + loadedFileArrays.size() + ")";
-            } else {
+            List<int[]> generatedArrays = new ArrayList<>();
+            if (!"Files".equals(mode)) {
                 for (int i = 0; i < runs; i++) {
-                    arrays.add(sortingService.generateArray(mode, size));
+                    generatedArrays.add(sortingService.generateArray(mode, size));
                 }
+            }
+
+            List<int[]> filesToRun = new ArrayList<>(loadedFileArrays);
+            List<String> fileNames = new ArrayList<>();
+            for (File file : selectedFiles) {
+                fileNames.add(file.getName());
             }
 
             runComparisonButton.setDisable(true);
             runComparisonButton.setText("Running...");
 
-            List<int[]> finalArrays = arrays;
-            String finalMode = displayMode;
-
             new Thread(() -> {
                 try {
                     for (String algo : selectedAlgos) {
-                        ComparisonResult result = sortingService.runComparison(algo, finalMode, finalArrays);
-                        Platform.runLater(() -> comparisonTable.getItems().add(result));
+                        if ("Files".equals(mode)) {
+                            for (int i = 0; i < filesToRun.size(); i++) {
+                                List<int[]> singleFileList = new ArrayList<>();
+                                singleFileList.add(filesToRun.get(i));
+                                ComparisonResult result = sortingService.runComparison(algo, fileNames.get(i), singleFileList);
+                                Platform.runLater(() -> comparisonTable.getItems().add(result));
+                            }
+                        } else {
+                            ComparisonResult result = sortingService.runComparison(algo, mode, generatedArrays);
+                            Platform.runLater(() -> comparisonTable.getItems().add(result));
+                        }
                     }
                 } catch (Throwable t) {
                     t.printStackTrace();
