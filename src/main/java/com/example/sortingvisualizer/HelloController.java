@@ -55,6 +55,7 @@ public class HelloController {
     @FXML private Button vizLoadFileButton;
     @FXML private Label vizSelectedFileLabel;
     @FXML private Button visualizeButton;
+    @FXML private Button vizResetButton;
     @FXML private Button pauseResumeButton;
     @FXML private Slider speedSlider;
     @FXML private Label vizComparisonsLabel;
@@ -67,6 +68,7 @@ public class HelloController {
     private final String[] arrayTypes = {"Random", "Sorted", "Inversely Sorted", "Files"};
 
     private int[] currentVizArray;
+    private int[] originalVizArray;
     private Timeline currentAnimation;
 
     private List<File> selectedFiles = new ArrayList<>();
@@ -163,6 +165,7 @@ public class HelloController {
         generateArrayButton.setOnAction(e -> generateArray());
         visualizeButton.setOnAction(e -> visualize());
         pauseResumeButton.setOnAction(e -> togglePauseResume());
+        vizResetButton.setOnAction(e -> vizReset());
         loadFileButton.setOnAction(e -> loadMultipleFiles());
         vizLoadFileButton.setOnAction(e -> vizLoadSingleFile());
     }
@@ -286,7 +289,7 @@ public class HelloController {
                 for (int i = 0; i < size; i++) {
                     currentVizArray[i] = Integer.parseInt(stringValues[i].trim());
                 }
-
+                originalVizArray = currentVizArray.clone();
                 vizSelectedFileLabel.setText(file.getName());
                 vizComparisonsLabel.setText("Comparisons: 0");
                 vizInterchangesLabel.setText("Interchanges: 0");
@@ -302,6 +305,7 @@ public class HelloController {
         stopAnimationIfRunning();
         String mode = vizArrayTypeComboBox.getValue();
         currentVizArray = sortingService.generateArray(mode, 100);
+        originalVizArray = currentVizArray.clone();
         vizComparisonsLabel.setText("Comparisons: 0");
         vizInterchangesLabel.setText("Interchanges: 0");
         drawBars(currentVizArray, new int[0], new int[0]);
@@ -475,5 +479,16 @@ public class HelloController {
                 showAlert("Export Error", "An error occurred while saving the file: " + ex.getMessage());
             }
         }
+    }
+    private void vizReset() {
+        if (originalVizArray == null) {
+            showAlert("No Array", "Please generate or load an array first!");
+            return;
+        }
+        stopAnimationIfRunning();
+        currentVizArray = originalVizArray.clone();
+        vizComparisonsLabel.setText("Comparisons: 0");
+        vizInterchangesLabel.setText("Interchanges: 0");
+        drawBars(currentVizArray, new int[0], new int[0]);
     }
 }

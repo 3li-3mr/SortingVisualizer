@@ -129,6 +129,10 @@
                                                     <font><Font name="System Bold" size="13.0" /></font>
                                                 </Button>
 
+                                                <Button fx:id="vizResetButton" mnemonicParsing="false" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;" text="Reset">
+                                                    <font><Font name="System Bold" size="13.0" /></font>
+                                                </Button>
+
                                                 <Label text="Speed:" />
                                                 <Slider fx:id="speedSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" value="5.0" />
                                                 <Label fx:id="vizComparisonsLabel" text="Comparisons: 0" textFill="#2196f3">
