@@ -36,6 +36,7 @@ public class HelloController {
     @FXML private Button loadFileButton;
     @FXML private Label selectedFileLabel;
     @FXML private Button runComparisonButton;
+    @FXML private Button clearTableButton;
     @FXML private Button exportCsvButton;
     @FXML private TableView<ComparisonResult> comparisonTable;
     @FXML private TableColumn<ComparisonResult, String> colAlgorithm;
@@ -157,6 +158,7 @@ public class HelloController {
         colInterchanges.setCellValueFactory(new PropertyValueFactory<>("interchanges"));
 
         runComparisonButton.setOnAction(e -> runComparison());
+        clearTableButton.setOnAction(e -> comparisonTable.getItems().clear());
         exportCsvButton.setOnAction(e -> exportToCsv());
         generateArrayButton.setOnAction(e -> generateArray());
         visualizeButton.setOnAction(e -> visualize());
@@ -166,8 +168,6 @@ public class HelloController {
     }
 
     private void runComparison() {
-        comparisonTable.getItems().clear();
-
         try {
             int size = Integer.parseInt(compareSizeField.getText());
             int runs = Integer.parseInt(compareRunsField.getText());

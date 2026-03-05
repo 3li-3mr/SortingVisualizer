@@ -64,6 +64,11 @@
                                         <Button fx:id="runComparisonButton" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Run Comparison">
                                             <font><Font name="System Bold" size="13.0" /></font>
                                         </Button>
+
+                                        <Button fx:id="clearTableButton" mnemonicParsing="false" style="-fx-background-color: #F44336; -fx-text-fill: white;" text="Clear Table">
+                                            <font><Font name="System Bold" size="13.0" /></font>
+                                        </Button>
+
                                         <Button fx:id="exportCsvButton" mnemonicParsing="false" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Export to CSV">
                                             <font><Font name="System Bold" size="13.0" /></font>
                                         </Button>
